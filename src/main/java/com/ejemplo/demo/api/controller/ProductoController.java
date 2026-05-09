@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.ejemplo.demo.api.dto.ProductoRequest;
+import com.ejemplo.demo.api.dto.ProductoResponse;
+import jakarta.validation.Valid; 
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -20,14 +24,32 @@ public class ProductoController {
 
     @GetMapping
     @Operation(summary = "Listar todos los productos")
-    public List<Producto> listar() {
+    public List<ProductoResponse> listar() {
         return productoService.obtenerTodos();
     }
 
-    @PostMapping("/categoria/{categoriaId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Crear un producto asociado a una categoría")
-    public Producto crear(@PathVariable Long categoriaId, @RequestBody Producto producto) {
-        return productoService.guardar(producto, categoriaId);
+    public ProductoResponse crear(@Valid @RequestBody ProductoRequest request) {
+    	return productoService.guardar(request);
+    }
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener un producto por ID")
+    public ResponseEntity<ProductoResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(productoService.obtenerPorId(id));
+        
+    }
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar un producto existente")
+    public ResponseEntity<ProductoResponse> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
+        return ResponseEntity.ok(productoService.actualizar(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Eliminar un producto")
+    public void eliminar(@PathVariable Long id) {
+        productoService.eliminar(id);
     }
 }

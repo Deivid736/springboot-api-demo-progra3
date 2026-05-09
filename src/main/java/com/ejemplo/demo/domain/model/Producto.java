@@ -2,6 +2,7 @@ package com.ejemplo.demo.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "productos")
@@ -13,7 +14,7 @@ public class Producto {
     @Column(nullable = false)
     private String nombre;
 
-    private Double precio;
+    private BigDecimal precio;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
@@ -25,8 +26,12 @@ public class Producto {
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public Double getPrecio() { return precio; }
-    public void setPrecio(Double precio) { this.precio = precio; }
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+    public void setPrecio(BigDecimal precio) {
+        this.precio = precio;
+    }
     public Categoria getCategoria() { return categoria; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 }
