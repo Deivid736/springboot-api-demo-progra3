@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: Spring Boot API Demo - Contract First
+  version: 0.0.1-SNAPSHOT
+paths:
+  /api/v1:
+    get:
+      tags:
+        - workshop
+      summary: Estado de salud del workshop
+      operationId: getWorkshopHealth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/saludos:
+    get:
+      tags:
+        - workshop
+      summary: Saludar por GET
+      operationId: saludarPorGet
+      parameters:
+        - name: nombre
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Mundo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaludoResponse'
+    post:
+      tags:
+        - workshop
+      summary: Saludar por POST
+      operationId: saludarPorPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaludoRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaludoResponse'
+
+  /api/v1/simulaciones/prestamo:
+    post:
+      tags:
+        - simulaciones
+      summary: Simular prestamo
+      operationId: simularPrestamo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrestamoRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrestamoResponse'
+
+  /api/v1/demo/estado/singleton/{valor}:
+    post:
+      tags:
+        - demo-estado
+      summary: Actualizar valor singleton
+      operationId: actualizarSingleton
+      parameters:
+        - name: valor
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/demo/estado/singleton:
+    get:
+      tags:
+        - demo-estado
+      summary: Obtener valor singleton
+      operationId: obtenerSingleton
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/demo/estado/singleton/reset:
+    post:
+      tags:
+        - demo-estado
+      summary: Reiniciar singleton
+      operationId: reiniciarSingleton
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/demo/estado/manual/{valor}:
+    post:
+      tags:
+        - demo-estado
+      summary: Actualizar valor manual
+      operationId: actualizarManual
+      parameters:
+        - name: valor
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/demo/estado/manual:
+    get:
+      tags:
+        - demo-estado
+      summary: Obtener valor manual
+      operationId: obtenerManual
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+components:
+  schemas:
+    SaludoRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+    SaludoResponse:
+      type: object
+      properties:
+        mensaje:
+          type: string
+    PrestamoRequest:
+      type: object
+      properties:
+        monto:
+          type: number
+        tasa:
+          type: number
+        plazos:
+          type: integer
+    PrestamoResponse:
+      type: object
+      properties:
+        cuotaMensual:
+          type: number
+        totalIntereses:
+          type: number

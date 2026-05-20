@@ -76,14 +76,84 @@
     <scope>runtime</scope>
 </dependency>
 
+<dependency>
+    <groupId>io.swagger.core.v3</groupId>
+    <artifactId>swagger-annotations</artifactId>
+    <version>2.2.17</version>
+</dependency>
+<dependency>
+    <groupId>org.openapitools</groupId>
+    <artifactId>jackson-databind-nullable</artifactId>
+    <version>0.2.6</version>
+</dependency>
+
     </dependencies>
 
-    <build>
+<build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.4.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            
+                            <apiPackage>com.ejemplo.demo.api.contract</apiPackage>
+                            
+                            <modelPackage>com.ejemplo.demo.api.dto</modelPackage>
+                            <generateModels>false</generateModels>
+                            
+                            <importMappings>
+                                SaludoRequest=com.ejemplo.demo.api.dto.SaludoRequest,
+                                SaludoResponse=com.ejemplo.demo.api.dto.SaludoResponse,
+                                PrestamoRequest=com.ejemplo.demo.api.dto.PrestamoRequest,
+                                PrestamoResponse=com.ejemplo.demo.api.dto.PrestamoResponse
+                            </importMappings>
+                            
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useJakartaEe>true</useJakartaEe>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+                     
         </plugins>
     </build>
 </project>
