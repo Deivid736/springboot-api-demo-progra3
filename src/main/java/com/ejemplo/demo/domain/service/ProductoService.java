@@ -12,7 +12,7 @@ import com.ejemplo.demo.domain.model.Producto;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.math.BigDecimal;
 
 @Service
 public class ProductoService {
@@ -42,7 +42,7 @@ public class ProductoService {
 
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
-        producto.setPrecio(request.getPrecio());
+        producto.setPrecio(BigDecimal.valueOf(request.getPrecio()));
         producto.setCategoria(categoria);
 
         return convertirADTO(productoRepository.save(producto));
@@ -58,7 +58,7 @@ public class ProductoService {
                 .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
 
         productoExistente.setNombre(request.getNombre());
-        productoExistente.setPrecio(request.getPrecio());
+        productoExistente.setPrecio(BigDecimal.valueOf(request.getPrecio()));
         productoExistente.setCategoria(categoria);
 
         return convertirADTO(productoRepository.save(productoExistente));
@@ -76,7 +76,7 @@ public class ProductoService {
         ProductoResponse dto = new ProductoResponse();
         dto.setId(producto.getId());
         dto.setNombre(producto.getNombre());
-        dto.setPrecio(producto.getPrecio());
+        dto.setPrecio(producto.getPrecio().doubleValue());
         if (producto.getCategoria() != null) {
             dto.setCategoriaNombre(producto.getCategoria().getNombre());
         }

@@ -2,6 +2,8 @@ openapi: 3.0.3
 info:
   title: Spring Boot API Demo - Contract First
   version: 0.0.1-SNAPSHOT
+  description: API demo con saludos, simulador de prestamo, estado singleton/manual y CRUD JPA.
+
 paths:
   /api/v1:
     get:
@@ -15,7 +17,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GetWorkshopHealth200Response'
 
   /api/v1/saludos:
     get:
@@ -37,6 +39,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SaludoResponse'
+
     post:
       tags:
         - workshop
@@ -76,6 +79,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/PrestamoResponse'
 
+  /api/v1/simulaciones:
+    get:
+      tags:
+        - simulaciones
+      summary: Obtiene la lista de todos los prestamos guardados
+      operationId: listarTodos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/v1/simulaciones/{id}:
+    delete:
+      tags:
+        - simulaciones
+      summary: Elimina un prestamo por su ID
+      operationId: eliminar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+
   /api/v1/demo/estado/singleton/{valor}:
     post:
       tags:
@@ -88,13 +124,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int32
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EstadoResponse'
 
   /api/v1/demo/estado/singleton:
     get:
@@ -108,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EstadoResponse'
 
   /api/v1/demo/estado/singleton/reset:
     post:
@@ -122,7 +159,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EstadoResponse'
 
   /api/v1/demo/estado/manual/{valor}:
     post:
@@ -136,13 +173,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int32
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EstadoResponse'
 
   /api/v1/demo/estado/manual:
     get:
@@ -156,33 +194,278 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EstadoResponse'
+
+  /api/v1/productos:
+    get:
+      tags:
+        - productos
+      summary: Listar todos los productos
+      operationId: listarProductos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoResponse'
+
+    post:
+      tags:
+        - productos
+      summary: Crear un producto asociado a una categoria
+      operationId: crearProducto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+
+  /api/v1/productos/{id}:
+    get:
+      tags:
+        - productos
+      summary: Obtener un producto por ID
+      operationId: obtenerProductoPorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+
+    put:
+      tags:
+        - productos
+      summary: Actualizar un producto existente
+      operationId: actualizarProducto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+
+    delete:
+      tags:
+        - productos
+      summary: Eliminar un producto
+      operationId: eliminarProducto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+
+  /api/v1/categorias:
+    get:
+      tags:
+        - categorias
+      summary: Listar todas las categorias
+      operationId: listarCategorias
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+
+    post:
+      tags:
+        - categorias
+      summary: Crear una nueva categoria
+      operationId: crearCategoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+
+  /api/v1/categorias/{id}:
+    get:
+      tags:
+        - categorias
+      summary: Obtener una categoria por ID
+      operationId: obtenerCategoriaPorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+
+    delete:
+      tags:
+        - categorias
+      summary: Eliminar una categoria
+      operationId: eliminarCategoria
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
 
 components:
   schemas:
+    GetWorkshopHealth200Response:
+      type: object
+      properties:
+        estado:
+          type: string
+        mensaje:
+          type: string
+
     SaludoRequest:
       type: object
+      required:
+        - nombre
       properties:
         nombre:
           type: string
+          minLength: 1
+
     SaludoResponse:
       type: object
       properties:
         mensaje:
           type: string
+
     PrestamoRequest:
       type: object
+      required:
+        - monto
+        - tasaAnual
+        - meses
       properties:
         monto:
           type: number
-        tasa:
+          format: double
+        tasaAnual:
           type: number
-        plazos:
+          format: double
+        meses:
           type: integer
+          format: int32
+
     PrestamoResponse:
       type: object
       properties:
         cuotaMensual:
           type: number
-        totalIntereses:
+          format: double
+        interesTotal:
           type: number
+          format: double
+        totalPagar:
+          type: number
+          format: double
+
+    EstadoResponse:
+      type: object
+      properties:
+        tipo:
+          type: string
+        valorActual:
+          type: integer
+          format: int32
+
+    ProductoRequest:
+      type: object
+      required:
+        - nombre
+        - precio
+        - categoriaId
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+        precio:
+          type: number
+          format: double
+        categoriaId:
+          type: integer
+          format: int64
+
+    ProductoResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        precio:
+          type: number
+          format: double
+        categoriaNombre:
+          type: string
+
+    Categoria:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string

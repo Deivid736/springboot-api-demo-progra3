@@ -36,11 +36,10 @@ class SaludoControllerTest {
     @Test
     @DisplayName("1) GET /api/v1/saludos?nombre=Ana -> 200")
     void testGetSaludoAna() throws Exception {
-        com.ejemplo.demo.api.dto.SaludoResponse respuestaFalsa = 
-            new com.ejemplo.demo.api.dto.SaludoResponse(
-                "Hola, Estudiante Ana. Bienvenido a Spring Boot 3!", 
-                java.time.Instant.now()
-            );
+    	com.ejemplo.demo.api.dto.SaludoResponse respuestaFalsa =
+    	        new com.ejemplo.demo.api.dto.SaludoResponse();
+
+    	respuestaFalsa.setMensaje("Hola, Estudiante Ana. Bienvenido a Spring Boot 3!");
 
         Mockito.when(saludoService.crearSaludo("Ana"))
                .thenReturn(respuestaFalsa);

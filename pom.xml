@@ -19,6 +19,8 @@
 
     <properties>
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -36,60 +38,48 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+          <version>2.6.0</version>
+        </dependency>
         
         <dependency>
-  <groupId>org.springdoc</groupId>
-  <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-  <version>2.6.0</version>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <scope>runtime</scope>
-</dependency>
-
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>runtime</scope>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <optional>true</optional>
-</dependency>
-
-<dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <scope>runtime</scope>
-</dependency>
-
-<dependency>
-    <groupId>io.swagger.core.v3</groupId>
-    <artifactId>swagger-annotations</artifactId>
-    <version>2.2.17</version>
-</dependency>
-<dependency>
-    <groupId>org.openapitools</groupId>
-    <artifactId>jackson-databind-nullable</artifactId>
-    <version>0.2.6</version>
-</dependency>
-
+           <groupId>com.h2database</groupId>
+           <artifactId>h2</artifactId>
+           <scope>runtime</scope>
+        </dependency>
+      
+        <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+      
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+   
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>    
+      
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.17</version>
+        </dependency>
+        <dependency>
+           <groupId>org.openapitools</groupId>
+           <artifactId>jackson-databind-nullable</artifactId>
+           <version>0.2.6</version>
+        </dependency>   
     </dependencies>
 
-<build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -110,17 +100,9 @@
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             
-                            <apiPackage>com.ejemplo.demo.api.contract</apiPackage>
-                            
-                            <modelPackage>com.ejemplo.demo.api.dto</modelPackage>
-                            <generateModels>false</generateModels>
-                            
-                            <importMappings>
-                                SaludoRequest=com.ejemplo.demo.api.dto.SaludoRequest,
-                                SaludoResponse=com.ejemplo.demo.api.dto.SaludoResponse,
-                                PrestamoRequest=com.ejemplo.demo.api.dto.PrestamoRequest,
-                                PrestamoResponse=com.ejemplo.demo.api.dto.PrestamoResponse
-                            </importMappings>
+                           <apiPackage>com.ejemplo.demo.api.contract</apiPackage>
+						   <modelPackage>com.ejemplo.demo.api.dto</modelPackage>
+                           <generateModels>true</generateModels>
                             
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
@@ -152,8 +134,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-                     
+            </plugin>                     
         </plugins>
     </build>
 </project>

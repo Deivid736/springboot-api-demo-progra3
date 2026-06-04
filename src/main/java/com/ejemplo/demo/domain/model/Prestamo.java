@@ -51,3 +51,4 @@ public class Prestamo {
     @JoinColumn(name = "cliente_id") // Esta es la llave foránea en la tabla
     private Cliente cliente;
 }
+

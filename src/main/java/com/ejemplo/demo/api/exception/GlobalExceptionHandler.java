@@ -1,59 +1,52 @@
 package com.ejemplo.demo.api.exception;
 
-import com.ejemplo.demo.api.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "codigo", "BUSINESS_RULE_ERROR",
+                "mensaje", ex.getMessage(),
+                "timestamp", Instant.now().toString()
+        ));
+    }
+    
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(EntityNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                "codigo", "NOT_FOUND",
+                "mensaje", ex.getMessage(),
+                "timestamp", Instant.now().toString()
+        ));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> manejarValidacion(MethodArgumentNotValidException ex) {
-        Map<String, String> detalles = new HashMap<>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            detalles.put(error.getField(), error.getDefaultMessage());
-        }
-
-        ErrorResponse body = new ErrorResponse(
-                "VALIDATION_ERROR",
-                "Uno o mas campos son invalidos",
-                Instant.now(),
-                detalles
-        );
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "codigo", "VALIDATION_ERROR",
+                "mensaje", "Datos de entrada inválidos",
+                "timestamp", Instant.now().toString()
+        ));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> manejarGenerica(Exception ex) {
-        ErrorResponse body = new ErrorResponse(
-                "INTERNAL_ERROR",
-                "Ocurrio un error interno",
-                Instant.now(),
-                Map.of()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "codigo", "INTERNAL_ERROR",
+                "mensaje", ex.getMessage(),
+                "timestamp", Instant.now().toString()
+        ));
     }
-
-    
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> manejarReglaDeNegocio(IllegalArgumentException ex) {
-        ErrorResponse body = new ErrorResponse(
-                "BUSINESS_RULE_ERROR",
-                ex.getMessage(),
-                Instant.now(),
-                Map.of()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-    }
-    
 }

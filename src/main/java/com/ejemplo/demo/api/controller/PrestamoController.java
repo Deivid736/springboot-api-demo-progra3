@@ -3,39 +3,37 @@ package com.ejemplo.demo.api.controller;
 import com.ejemplo.demo.api.dto.PrestamoRequest;
 import com.ejemplo.demo.api.dto.PrestamoResponse;
 import com.ejemplo.demo.domain.service.PrestamoService; 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import com.ejemplo.demo.domain.model.Prestamo;
+import org.springframework.http.ResponseEntity; 
+import org.springframework.web.bind.annotation.RestController;
+import com.ejemplo.demo.api.contract.SimulacionesApi;
 import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
-@RequestMapping("/api/v1/simulaciones")
-@Tag(name = "Simulador de Préstamos")
-public class PrestamoController {
 
-    private final PrestamoService prestamoService;
+public class PrestamoController implements SimulacionesApi {
 
+private final PrestamoService prestamoService;
+    
     public PrestamoController(PrestamoService prestamoService) {
         this.prestamoService = prestamoService;
     }
+    
+    @Override
+    public ResponseEntity<PrestamoResponse> simularPrestamo(PrestamoRequest prestamoRequest) {
+        return ResponseEntity.ok(prestamoService.calcular(prestamoRequest));
+    }
 
-    @PostMapping("/prestamo")
-    @Operation(summary = "Calcula la simulación")
-    public PrestamoResponse simular(@Valid @RequestBody PrestamoRequest request) {
-        return prestamoService.calcular(request);
+    @Override
+    public ResponseEntity<List<Object>> listarTodos() {
+        return ResponseEntity.ok((List<Object>) (List<?>) prestamoService.obtenerTodos());
     }
-    
-    @GetMapping
-    @Operation(summary = "Obtiene la lista de todos los préstamos guardados")
-    public List<Prestamo> listarTodos() {
-        return prestamoService.obtenerTodos();
-    }
-    
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Elimina un préstamo por su ID")
-    public void eliminar(@PathVariable Long id) {
+
+    @Override
+    public ResponseEntity<Void> eliminar(@PathVariable("id") Long id) {
         prestamoService.eliminarPrestamo(id);
+        return ResponseEntity.noContent().build();
     }
 }

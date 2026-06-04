@@ -1,55 +1,50 @@
 package com.ejemplo.demo.api.controller;
 
-import com.ejemplo.demo.domain.model.Producto;
+import com.ejemplo.demo.api.contract.ProductosApi;
+import com.ejemplo.demo.api.dto.ProductoRequest;  // <- DTO GENERADO POR YAML
+import com.ejemplo.demo.api.dto.ProductoResponse; // <- DTO GENERADO POR YAML
 import com.ejemplo.demo.domain.service.ProductoService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import com.ejemplo.demo.api.dto.ProductoRequest;
-import com.ejemplo.demo.api.dto.ProductoResponse;
-import jakarta.validation.Valid; 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/productos")
-@Tag(name = "Productos", description = "Manejo de productos en PostgreSQL")
-public class ProductoController {
+public class ProductoController implements ProductosApi {
 
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
 
-    @GetMapping
-    @Operation(summary = "Listar todos los productos")
-    public List<ProductoResponse> listar() {
-        return productoService.obtenerTodos();
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Crear un producto asociado a una categoría")
-    public ProductoResponse crear(@Valid @RequestBody ProductoRequest request) {
-    	return productoService.guardar(request);
+    @Override
+    public ResponseEntity<List<ProductoResponse>> listarProductos() {
+        return ResponseEntity.ok(productoService.obtenerTodos());
     }
-    @GetMapping("/{id}")
-    @Operation(summary = "Obtener un producto por ID")
-    public ResponseEntity<ProductoResponse> obtenerPorId(@PathVariable Long id) {
+
+    @Override
+    public ResponseEntity<ProductoResponse> crearProducto(@Valid @RequestBody ProductoRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.guardar(request));
+    }
+
+    @Override
+    public ResponseEntity<ProductoResponse> obtenerProductoPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(productoService.obtenerPorId(id));
-        
     }
-    @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un producto existente")
-    public ResponseEntity<ProductoResponse> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
+
+    @Override
+    public ResponseEntity<ProductoResponse> actualizarProducto(@PathVariable("id") Long id, @Valid @RequestBody ProductoRequest request) {
         return ResponseEntity.ok(productoService.actualizar(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Eliminar un producto")
-    public void eliminar(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Long id) {
         productoService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
